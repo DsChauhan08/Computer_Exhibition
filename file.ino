@@ -1,5 +1,10 @@
+#include <WiFi.h>
+#include <WebServer.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+
+const char* ssid = "";
+const char* password = "";
 
 #define SOIL_MOISTURE_PIN 34  //(VP/GPIO34)
 #define DS18B20_PIN 4         //(GPIO4)
@@ -10,6 +15,9 @@
 
 OneWire oneWire(DS18B20_PIN);
 DallasTemperature sensors(&oneWire);
+
+//port 80 of local
+WebServer server(80);
 
 int soilMoistureRaw = 0;
 int soilMoisturePercent = 0;
@@ -42,7 +50,14 @@ void loop() {
   
   sensors.requestTemperatures();
   temperatureC = sensors.getTempCByIndex(0);
+
+  //Webpage HTML baisc : 
+  html += "<div class='header'>";
+  html += "<h1>🌱 Plant Monitor</h1>";
+  html += "<p>Real-time environmental monitoring</p>";
+  html += "</div>";
   
+
   // Display
   Serial.println("=== Sensor Readings ===");
   
